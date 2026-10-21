@@ -2813,10 +2813,16 @@ function Toast({ msg, type, onClose }) {
       ? { bg: 'bg-white dark:bg-[#20302D] border-emerald-200 dark:border-emerald-800', accent: 'bg-emerald-500', icon: 'ri-checkbox-circle-line text-emerald-500', text: 'text-ink dark:text-white' }
       : { bg: 'bg-white dark:bg-[#20302D] border-slate-200 dark:border-slate-700', accent: 'bg-wasla', icon: 'ri-information-line text-wasla', text: 'text-ink dark:text-white' };
   return (
-    <div style={{ animation: 'toastIn .42s cubic-bezier(.16,1,.3,1) both' }} className={`fixed wasla-toast left-1/2 -translate-x-1/2 ${cfg.bg} ${cfg.text} px-5 py-3.5 rounded-2xl shadow-soft border flex items-center gap-3 text-[10px] font-bold z-[100] max-w-[92vw]`}>
-      <span className={`w-8 h-8 rounded-full ${cfg.accent} text-white grid place-items-center shrink-0`}><i className={cfg.icon.replace('text-', 'text-white ')}></i></span>
+    <div style={{ animation: 'toastIn .42s cubic-bezier(.16,1,.3,1) both' }} className={`fixed wasla-toast left-1/2 -translate-x-1/2 ${cfg.bg} ${cfg.text} px-5 py-3.5 rounded-2xl shadow-soft border flex-colum items-center gap-3 text-[10px] font-bold z-[100] max-w-[92vw]`}>
+      {/* <span className={`w-8 h-8 rounded-full ${cfg.accent} text-white grid place-items-center shrink-0`}>
+        <i className={cfg.icon.replace('text-', 'text-white ')}></i>
+      </span> */}
       <span className="leading-snug">{msg}</span>
-      <button onClick={onClose} className="ms-2 w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-700 grid place-items-center shrink-0 hover:bg-slate-200"><i className="ri-close-line text-sm"></i></button>
+      <div className="flex justify-center w-full mt-2 mx-auto">
+        <button onClick={onClose} className="ms-2 w-15 h-7 rounded-full bg-slate-100 dark:bg-slate-700 grid place-items-center shrink-0 hover:bg-slate-200  ">
+        <i className="ri-close-line text-sm ">إلغاء</i>
+      </button>
+      </div>
     </div>
   );
 }
@@ -3552,7 +3558,7 @@ function App() {
                     <div className="w-11 h-11 rounded-xl bg-waslaSoft dark:bg-wasla/15 text-wasla grid place-items-center text-xl shrink-0"><i className="ri-compass-3-line"></i></div>
                   </button>
                 ) : (
-                  <button onClick={() => setView('myCampaigns')} className="w-full text-start bg-white dark:bg-[#182422] rounded-[18px] border border-slate-200/60 dark:border-slate-700/60 p-5 shadow-soft card-premium hover:shadow-softHover transition flex items-center justify-between">
+                  <button onClick={() => setView('myCampaigns')} className="w-full text-start bg-white dark:bg-[#182422] rounded-[18px] border border-slate-200/60 dark:border-slate-700/60 p-5 shadow-soft card-premium hover:shadow-softHover transition flex items-center justify-between mt-5">
                     <div>
                       <div className="text-xs font-bold text-slate-500">حملاتي — إجمالي • نشطة</div>
                       <div className="text-2xl font-bold mt-1">{myCampaigns.length} <span className="text-sm text-muted">•</span> {myCampaigns.filter(c => c.status === 'active').length} <span className="text-sm text-emerald-600">نشطة</span></div>
@@ -4799,8 +4805,21 @@ function App() {
           </div>
           {inviteConfirm && (
             <div className="mt-4 p-4 rounded-xl border-2 border-wasla/30 bg-waslaSoft/40 dark:bg-wasla/10 flex items-center justify-between gap-3">
-              <span className="text-sm">تأكيد دعوة <b>{inviteConfirm.inf.name}</b> لحملة "{inviteConfirm.camp.title}"؟</span>
-              <span className="flex gap-2 shrink-0"><button onClick={() => { const { inf, camp } = inviteConfirm; setInviteConfirm(null); confirmInvite(inf, camp); setInviteSearch(''); }} className="px-4 py-2 rounded-xl bg-wasla text-white text-xs font-bold">تأكيد</button><button onClick={() => setInviteConfirm(null)} className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-600 text-xs font-bold">إلغاء</button></span>
+              <span className="text-sm">
+                تأكيد دعوة <b>{inviteConfirm.inf.name}</b> لحملة "{inviteConfirm.camp.title}"؟
+              </span>
+              <span className="flex-colum gap-2 shrink-0">
+                <button onClick={() => { const { inf, camp } = inviteConfirm; 
+                setInviteConfirm(null); 
+                confirmInvite(inf, camp); 
+                setInviteSearch(''); }} 
+                className="flex-colum px-4 py-2 rounded-xl bg-wasla text-white text-xs font-bold">
+                  تأكيد
+                </button>
+                <button onClick={() => setInviteConfirm(null)} className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-600 text-xs font-bold">
+                  إلغاء
+                </button>
+              </span>
             </div>
           )}
         </Modal>
@@ -4833,9 +4852,16 @@ function App() {
                 })()}
               </div>
               {inviteConfirm && (
-                <div className="mt-4 p-4 rounded-xl border-2 border-wasla/30 bg-waslaSoft/40 dark:bg-wasla/10 flex items-center justify-between gap-3">
-                  <span className="text-sm">تأكيد إرسال الدعوة لحملة "{inviteConfirm.camp.title}"؟</span>
-                  <span className="flex gap-2 shrink-0"><button onClick={() => { const { inf, camp, pkg } = inviteConfirm; setInviteConfirm(null); setCampaignPickerSearch(''); if (pkg) confirmPackageRequest(camp); else confirmInvite(inf, camp); }} className="px-4 py-2 rounded-xl bg-wasla text-white text-xs font-bold">تأكيد</button><button onClick={() => setInviteConfirm(null)} className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-600 text-xs font-bold">إلغاء</button></span>
+                <div className="mt-4 p-4 rounded-xl border-2 border-wasla/30 bg-waslaSoft/40 dark:bg-wasla/10 flex-colum items-center justify-between gap-3">
+                  <span className="text-sm  ">تأكيد إرسال الدعوة لحملة "{inviteConfirm.camp.title}"؟</span>
+                  <div className="flex gap-2 shrink-0 mt-2 justify-center ">
+                    <button onClick={() => { const { inf, camp, pkg } = inviteConfirm; setInviteConfirm(null); setCampaignPickerSearch(''); if (pkg) confirmPackageRequest(camp); else confirmInvite(inf, camp); }} className="px-4 py-2 rounded-xl bg-wasla text-white text-xs font-bold">
+                      تأكيد
+                    </button>
+                    <button onClick={() => setInviteConfirm(null)} className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-600 text-xs font-bold">
+                      إلغاء
+                    </button>
+                  </div>
                 </div>
               )}
             </>
@@ -5026,7 +5052,7 @@ function AdvertiserProfileForm({ data, onSave, initialName }) {
           <p className="text-[11px] text-slate-500 mt-1">اختر واحدة فقط — أو "لا يوجد" إذا لم تتوفر.</p>
         </div>
         <div className="sm:col-span-2">
-          <label className="text-xs font-bold">الاهتمامات / مجال العمل</label>
+          <label className="text-xs font-bold"><p className="mb-1 ">  الاهتمامات / مجال العمل </p><p className="text-[9px] text-gray-400"> اختر  اهتمامات مشروعك لمطابقت حسابك مع مؤثر مناسب</p></label>
           <div className="flex flex-wrap gap-2 mt-2">
             {interestsOptions.map(tag => (
               <button key={tag} onClick={() => toggleInterest(tag)} className={`px-3 py-1.5 rounded-full text-xs font-bold border ${form.interests.includes(tag) ? 'bg-wasla text-white border-wasla' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-600 hover:bg-slate-50'}`}>{tag}</button>
@@ -5157,7 +5183,9 @@ function PackageEditor({ packages, onChange }) {
                   <div className="font-bold text-sm">{p.name} — <span className="text-emerald-600">{Number(p.price).toLocaleString('ar-EG')} ر.س</span></div>
                   <div className="text-xs text-slate-500">{p.reels} ريلز • {p.posts} بوستات • {p.stories} ستوريات {p.notes ? `• ${p.notes}` : ''} {p.includes && !p.reels && !p.posts && !p.stories ? `• ${p.includes}` : ''}</div>
                 </div>
-                <button onClick={() => onChange(packages.filter((_, j) => j !== origIdx))} className="w-8 h-8 rounded-full bg-red-50 text-red-600 grid place-items-center shrink-0"><i className="ri-delete-bin-line"></i></button>
+                <button onClick={() => onChange(packages.filter((_, j) => j !== origIdx))} className="w-8 h-8 rounded-full bg-red-50 text-red-500 grid place-items-center shrink-0">
+                  <i className="ri-delete-bin-line"></i>
+                  </button>
               </div>
             );
           })}
