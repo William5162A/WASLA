@@ -4714,7 +4714,7 @@ function App() {
 
         {/* MOBILE BOTTOM NAV — dir ltr guarantees physical left→right order */}
         {auth && (
-          <nav aria-label="التنقل الرئيسي" dir="ltr" className="wasla-bottom-nav lg:hidden fixed inset-x-0 bottom-0 z-40 bg-white dark:bg-[#182422] border-t border-slate-200 dark:border-slate-700">
+          <nav aria-label="التنقل الرئيسي" dir="ltr" className="wasla-bottom-nav w-[95%] mx-auto lg:hidden fixed inset-x-0 bottom-2 rounded-2xl z-40 bg-white dark:bg-[#182422] border-t border-slate-200 dark:border-slate-700">
             <ul className="grid grid-cols-5 h-[var(--bottom-nav-h)]">
               {(auth.role === 'advertiser' ? [
                 { id: 'profile', label: 'الصفحة الشخصية', icon: 'ri-user-line' },
