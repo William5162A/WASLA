@@ -2683,8 +2683,8 @@ function summarizeReputation(records, accountId, role) {
   let completedCollaborations = 0, ratingTotal = 0, ratingCount = 0;
   for (const record of records) {
     if (!record.id || seen.has(record.id) || record[idKey] !== accountId ||
-        record.status !== 'completed' || !record.confirmedByInfluencer ||
-        !record.confirmedByAdvertiser) continue;
+      record.status !== 'completed' || !record.confirmedByInfluencer ||
+      !record.confirmedByAdvertiser) continue;
     seen.add(record.id);
     completedCollaborations += 1;
     const rating = record[ratingKey];
@@ -2708,8 +2708,10 @@ function getReputation(account, mode = 'live') {
   const completedCollaborations = Math.max(0, Math.floor(Number(account.completedCollaborations) || 0));
   const ratingCount = Math.max(0, Math.floor(Number(account.ratingCount) || 0));
   const ratingTotal = Number(account.ratingTotal) || 0;
-  return { completedCollaborations, ratingTotal, ratingCount,
-    average: ratingCount > 0 ? ratingTotal / ratingCount : null };
+  return {
+    completedCollaborations, ratingTotal, ratingCount,
+    average: ratingCount > 0 ? ratingTotal / ratingCount : null
+  };
 }
 
 function compareReputation(a, b) {
@@ -2724,10 +2726,10 @@ function matchesInterests(account, interests = []) {
 }
 
 function rankAccounts(accounts, interests = [], newcomerEvery = 5,
-    rotation = Math.floor(Date.now() / 86400000)) {
+  rotation = Math.floor(Date.now() / 86400000)) {
   const groups = interests.length
     ? [accounts.filter(a => matchesInterests(a, interests)),
-       accounts.filter(a => !matchesInterests(a, interests))]
+    accounts.filter(a => !matchesInterests(a, interests))]
     : [accounts];
   return groups.flatMap(group => {
     const sorted = [...group].sort(compareReputation);
@@ -2740,7 +2742,7 @@ function rankAccounts(accounts, interests = [], newcomerEvery = 5,
     const interval = Math.max(2, newcomerEvery);
     while (oldIndex < established.length || newIndex < rotated.length) {
       if (newIndex < rotated.length &&
-          (oldIndex >= established.length || (result.length + 1) % interval === 0)) {
+        (oldIndex >= established.length || (result.length + 1) % interval === 0)) {
         result.push(rotated[newIndex++]);
       } else {
         result.push(established[oldIndex++]);
@@ -2758,7 +2760,7 @@ function getCampaignAdvertiser(campaign, ownAccount = null) {
 function rankCampaigns(items, interests = [], ownAccount = null) {
   const groups = interests.length
     ? [items.filter(c => interests.includes(c.category)),
-       items.filter(c => !interests.includes(c.category))]
+    items.filter(c => !interests.includes(c.category))]
     : [items];
   return groups.flatMap(group => ['active', 'in_progress', 'completed'].flatMap(status => {
     const eligible = group.filter(c => c.status === status);
@@ -2787,12 +2789,12 @@ function ReputationSummary({ account, mode, compact = false }) {
       </div>
       <div className="  ">
         <span className="inline-flex items-center gap-1">
-        <i className="ri-star-fill text-amber-500" aria-hidden="true">
+          <i className="ri-star-fill text-amber-500" aria-hidden="true">
 
-        </i>
-        {stats.average === null ? 'لا توجد تقييمات بعد' :
-          <><bdi dir="ltr">{stats.average.toFixed(1)}/5</bdi><span>({stats.ratingCount} تقييم)</span></>}
-      </span>
+          </i>
+          {stats.average === null ? 'لا توجد تقييمات بعد' :
+            <><bdi dir="ltr">{stats.average.toFixed(1)}/5</bdi><span>({stats.ratingCount} تقييم)</span></>}
+        </span>
       </div>
       {/* {mode === 'demo' && <span className="text-[9px] opacity-80">تجريبي</span>} */}
     </div>
@@ -2820,8 +2822,8 @@ function Toast({ msg, type, onClose }) {
       <span className="leading-snug">{msg}</span>
       <div className="flex justify-center w-full mt-2 mx-auto">
         <button onClick={onClose} className="ms-2 w-15 h-7 rounded-full bg-slate-100 dark:bg-slate-700 grid place-items-center shrink-0 hover:bg-slate-200  ">
-        <i className="ri-close-line text-sm ">إلغاء</i>
-      </button>
+          <i className="ri-close-line text-sm ">إلغاء</i>
+        </button>
       </div>
     </div>
   );
@@ -3349,7 +3351,7 @@ function App() {
 
                 <div className="relative grid grid-cols-2 gap-3 mt-5">
                   {[
-                    { id: 'advertiser', label: 'معلن', sub: 'صاحب مشروع أو متجر', icon: 'ri-store-2-line', grad: 'from-wasla to-teal-600' },
+                    { id: 'advertiser', label: 'معلن', sub: 'صاحب مشروع ', icon: 'ri-store-2-line', grad: 'from-wasla to-teal-600' },
                     { id: 'influencer', label: 'مؤثر', sub: 'صانع محتوى', icon: 'ri-quill-pen-line', grad: 'from-emerald-500 to-teal-400' },
                   ].map(r => {
                     const active = loginRole === r.id;
@@ -3776,12 +3778,26 @@ function App() {
                     <i className="ri-search-line absolute right-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
                     <input value={searchInfluencer} onChange={e => setSearchInfluencer(e.target.value)} placeholder="ابحث بالاسم أو المعرف..." className="w-full py-3 rounded-2xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-[#182422] text-sm outline-none focus-ring shadow-soft pr-10 ps-4" />
                   </div>
-                  <select value={filterInterest} onChange={e => setFilterInterest(e.target.value)} className="px-3 py-3 rounded-2xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-[#182422] text-sm font-bold shadow-soft focus-ring">
-                    <option>الكل</option><option>اهتماماتك</option><option>مكياج</option><option>تجميل</option><option>فعاليات</option><option>تقنية</option><option>أزياء</option><option>رياضة</option><option>سفر</option>
-                  </select>
-                  <select value={followerRange} onChange={e => setFollowerRange(e.target.value)} className="px-3 py-3 rounded-2xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-[#182422] text-sm font-bold shadow-soft focus-ring">
-                    <option>الكل</option><option>أقل من 50 ألف</option><option>50 - 200 ألف</option><option>أكثر من 200 ألف</option>
-                  </select>
+
+                  <div className="flex w-full justify-around text-gray-300 text-sm">
+                    <div>
+                      حسب الاهتمام
+                    </div>
+                    <div>
+                      عدد المتابعين
+                    </div>
+                  </div>
+
+
+
+                  <div className="flex gap-2 w-full justify-center ">
+                    <select value={filterInterest} onChange={e => setFilterInterest(e.target.value)} className="w-1/2 px-3 py-3 rounded-2xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-[#182422] text-sm font-bold shadow-soft focus-ring">
+                      <option>الكل</option><option>اهتماماتك</option><option>مكياج</option><option>تجميل</option><option>فعاليات</option><option>تقنية</option><option>أزياء</option><option>رياضة</option><option>سفر</option>
+                    </select>
+                    <select value={followerRange} onChange={e => setFollowerRange(e.target.value)} className="w-1/2 px-3 py-3 rounded-2xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-[#182422] text-sm font-bold shadow-soft focus-ring">
+                      <option>الكل</option><option>أقل من 50 ألف</option><option>50 - 200 ألف</option><option>أكثر من 200 ألف</option>
+                    </select>
+                  </div>
                 </div>
 
                 {filteredInfluencers.length === 0 ? (
@@ -4809,11 +4825,13 @@ function App() {
                 تأكيد دعوة <b>{inviteConfirm.inf.name}</b> لحملة "{inviteConfirm.camp.title}"؟
               </span>
               <span className="flex-colum gap-2 shrink-0">
-                <button onClick={() => { const { inf, camp } = inviteConfirm; 
-                setInviteConfirm(null); 
-                confirmInvite(inf, camp); 
-                setInviteSearch(''); }} 
-                className="flex-colum px-4 py-2 rounded-xl bg-wasla text-white text-xs font-bold">
+                <button onClick={() => {
+                  const { inf, camp } = inviteConfirm;
+                  setInviteConfirm(null);
+                  confirmInvite(inf, camp);
+                  setInviteSearch('');
+                }}
+                  className="flex-colum px-4 py-2 rounded-xl bg-wasla text-white text-xs font-bold">
                   تأكيد
                 </button>
                 <button onClick={() => setInviteConfirm(null)} className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-600 text-xs font-bold">
@@ -4965,12 +4983,25 @@ function App() {
                   <div className="bg-slate-50 dark:bg-slate-800 rounded-xl py-3"><div className="text-[10px] text-slate-500 font-bold">الهدف</div><div className="text-sm font-bold">{detailCamp.goal}</div></div>
                 </div>
                 {!isActive && <div className="text-xs font-bold text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl px-3 py-2">هذه الحملة {detailCamp.status === 'completed' ? 'مكتملة' : detailCamp.status === 'cancelled' ? 'ملغاة' : detailCamp.status === 'in_progress' ? 'قيد التنفيذ' : 'غير متاحة'} — غير متاحة للتقديم أو التفاوض</div>}
-                <div className="flex gap-2 pt-2">
+                <div className=" gap-2 pt-2">
                   {auth?.role === 'influencer' && isActive ? (
                     <>
-                      <button onClick={() => { const c = detailCamp; const ok = handleApplyToCampaign(c); if (ok !== false) setShowDetailModal(false); }} className="flex-1 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-sm btn-primary">التقديم على الحملة</button>
-                      <button onClick={() => { const c = detailCamp; setShowDetailModal(false); setTimeout(() => openNegotiate(c, c.advertiserId || c.id), 260); }} className="flex-1 py-3 rounded-xl border-2 border-wasla text-wasla font-bold text-sm hover:bg-waslaSoft dark:hover:bg-wasla/10">التفاوض</button>
-                      <button onClick={() => setShowDetailModal(false)} className="px-6 py-3 rounded-xl border border-slate-200 dark:border-slate-600 font-bold text-sm">إغلاق</button>
+                      <div className="flex gap-2 ">
+                        <button onClick={() => { const c = detailCamp; const ok = handleApplyToCampaign(c); if (ok !== false) setShowDetailModal(false); }} className="flex-1 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-sm btn-primary">
+                          التقديم على الحملة
+                        </button>
+                        <button onClick={() => { const c = detailCamp; setShowDetailModal(false); setTimeout(() => openNegotiate(c, c.advertiserId || c.id), 260); }} className="flex-1 py-3 rounded-xl border-2 border-wasla text-wasla font-bold text-sm hover:bg-waslaSoft dark:hover:bg-wasla/10">
+                          التفاوض
+                        </button>
+                        <button onClick={() => setShowDetailModal(false)} className="px-6 py-3 rounded-xl border border-slate-200 dark:border-slate-600 font-bold text-sm">
+                          إغلاق
+                        </button>
+                      </div>
+                      <div className="flex mt-2 w-full justify-center">
+                        <button onClick={() => { openAdvertiserProfile(adv); setShowDetailModal(false) }} className="px-6 py-3 rounded-xl w-full border border-slate-200 dark:border-slate-600 font-bold text-sm">
+                          عرض صفحة المعلن
+                        </button>
+                      </div>
                     </>
                   ) : auth?.role === 'influencer' ? (
                     <button onClick={() => setShowDetailModal(false)} className="flex-1 py-3 rounded-xl border border-slate-200 dark:border-slate-600 font-bold text-sm">إغلاق</button>
@@ -5185,7 +5216,7 @@ function PackageEditor({ packages, onChange }) {
                 </div>
                 <button onClick={() => onChange(packages.filter((_, j) => j !== origIdx))} className="w-8 h-8 rounded-full bg-red-50 text-red-500 grid place-items-center shrink-0">
                   <i className="ri-delete-bin-line"></i>
-                  </button>
+                </button>
               </div>
             );
           })}
